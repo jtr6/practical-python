@@ -19,9 +19,9 @@ while principal > 0:
     principal = principal * (1+rate/12) - payment
     total_paid = total_paid + payment    
     month += 1
-    print(month, round(total_paid,4) , round(principal, 4))
+    print(f'{month} \t ${round(total_paid, 2)}, \t remaining ${round(principal, 2)}')
 
 if principal < 0:
     total_paid = total_paid + principal
 
-print('Total paid', round(total_paid, 4), " in {} months".format(month))
+print(f'Total paid: ${round(total_paid, 3)}  in {month} months')
