@@ -22,6 +22,7 @@ while principal > 0:
     print(f'{month} \t ${round(total_paid, 2)}, \t remaining ${round(principal, 2)}')
 
 if principal < 0:
-    total_paid = total_paid + principal
+    total_paid = total_paid + principal 
+
 
 print(f'Total paid: ${round(total_paid, 3)}  in {month} months')
