@@ -26,6 +26,18 @@ def read_prices(filename):
                 prices[f"{row[0]}"] = float(row[1])
         return prices
 
+
+def make_report(stocks, prices): # takes a list of stocks and a dict of prices and outputs a formatted report
+    report = []
+    for row in stocks:
+        name = row["name"]
+        shares = row["shares"]
+        price = prices[name]
+        change = price - row["price"]
+        report.append((name, shares, price, change))
+    return report
+
+
 portfolio = read_portfolio("Data/portfolio.csv")
 prices = read_prices("Data/prices.csv")
 
@@ -55,3 +67,13 @@ if change < 0:
 
 else:
     print("Your stock has neither gained nor lost value")
+
+report = make_report(portfolio, prices)
+
+headers = ("Name", "Shares", "Price", "Change")
+print("%10s %10s %10s %10s" % headers)
+print(("-"*10 + " ") * len(headers))
+
+for name, shares, price, change in report:
+    price = f"${price:0.2f}" 
+    print(f"{name:>10s} {shares:>10d} {price:>10s} {change:>10.2f}")
