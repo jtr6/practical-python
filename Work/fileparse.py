@@ -9,6 +9,9 @@ def parse_csv(lines, select=None, types=None, has_headers=True, delimiter=',', s
     '''
     Parse a CSV iterable into a list of dicts
     '''
+    if isinstance(lines, str):
+        raise TypeError("input must be an iterable, not a filename")
+
     if select and not has_headers:
         raise RuntimeError("select argument requires an input with column headers")
 
