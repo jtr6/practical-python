@@ -4,30 +4,27 @@
 
 import csv
 import numpy as np
+import fileparse
 
-
-def read_portfolio(filename):
-    portfolio = []
-    with open(filename, "rt") as f:
-        rows = csv.reader(f)
-        headers = next(rows)
-        for row in rows:
-            holding = dict({"name": row[0], "shares": int(row[1]), "price": float(row[2])})
-            portfolio.append(holding)
+def read_portfolio(portfolio_file):
+    '''
+    Read in a csv to a portfolio dict
+    '''
+    portfolio = fileparse.parse_csv(portfolio_file, select=["name", "shares", "price"], types=[str,int,float])
     return portfolio
 
-
-def read_prices(filename):
-    prices = dict({})
-    with open(filename, "r") as f:
-        rows = csv.reader(f)
-        for row in rows:
-            if len(row) > 0:
-                prices[f"{row[0]}"] = float(row[1])
-        return prices
-
+def read_prices(prices_file):
+    '''
+    Read in a price list and return a price dict
+    '''
+    price_list = fileparse.parse_csv(prices_file, types=[str,float], has_headers=False)
+    prices = dict(price_list)
+    return prices
 
 def make_report(stocks, prices): # takes a list of stocks and a dict of prices and outputs a formatted report
+    '''
+    Write a report table of shares, prices and change in price
+    '''
     report = []
     for row in stocks:
         name = row["name"]
@@ -38,6 +35,9 @@ def make_report(stocks, prices): # takes a list of stocks and a dict of prices a
     return report
 
 def portfolio_report(portfolio_file, prices_file):
+    '''
+    Print out full report with table of shares, price and change, and the current total value and change
+    '''
     portfolio = read_portfolio(portfolio_file)
     prices = read_prices(prices_file)
     total_in_shares = 0 
@@ -45,7 +45,7 @@ def portfolio_report(portfolio_file, prices_file):
         value = company["shares"] * company["price"]
         total_in_shares += value
     updated_total = 0
-    for company, new in zip(portfolio, prices):
+    for company in portfolio:
         name = company["name"]
         value = company["shares"] * prices[name]
         updated_total += value
