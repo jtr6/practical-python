@@ -70,5 +70,9 @@ def portfolio_report(portfolio_file, prices_file):
         price = f"${price:0.2f}" 
         print(f"{name:>10s} {shares:>10d} {price:>10s} {change:>10.2f}")
 
-
-portfolio_report("Data/portfolio.csv", "Data/prices.csv")
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) == 3:
+        portfolio_report(sys.argv[1], sys.argv[2])
+    else:
+        portfolio_report("Data/portfolio.csv", "Data/prices.csv")
