@@ -4,12 +4,12 @@
 
 import report
 
-def portfolio_cost(file):
+def portfolio_cost(filename):
     '''
     Return total cost of the portfolio
     '''
     cost = 0
-    portfolio = report.read_portfolio(file)
+    portfolio = report.read_portfolio(filename)
     for company in portfolio:
         num_shares = company["shares"]
         share_price = company["price"]

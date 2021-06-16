@@ -10,15 +10,17 @@ def read_portfolio(portfolio_file):
     '''
     Read in a csv to a portfolio dict
     '''
-    portfolio = fileparse.parse_csv(portfolio_file, select=["name", "shares", "price"], types=[str,int,float])
+    with open(portfolio_file) as file:
+        portfolio = fileparse.parse_csv(file, select=["name", "shares", "price"], types=[str,int,float])
     return portfolio
 
 def read_prices(prices_file):
     '''
     Read in a price list and return a price dict
     '''
-    price_list = fileparse.parse_csv(prices_file, types=[str,float], has_headers=False)
-    prices = dict(price_list)
+    with open(prices_file) as file:
+        price_list = fileparse.parse_csv(file, types=[str,float], has_headers=False)
+        prices = dict(price_list)
     return prices
 
 def make_report(stocks, prices): # takes a list of stocks and a dict of prices and outputs a formatted report
