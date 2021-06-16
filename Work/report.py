@@ -37,43 +37,38 @@ def make_report(stocks, prices): # takes a list of stocks and a dict of prices a
         report.append((name, shares, price, change))
     return report
 
+def portfolio_report(portfolio_file, prices_file):
+    portfolio = read_portfolio(portfolio_file)
+    prices = read_prices(prices_file)
+    total_in_shares = 0 
+    for company in portfolio:
+        value = company["shares"] * company["price"]
+        total_in_shares += value
+    updated_total = 0
+    for company, new in zip(portfolio, prices):
+        name = company["name"]
+        value = company["shares"] * prices[name]
+        updated_total += value
+    change = round(updated_total - total_in_shares, 2)
 
-portfolio = read_portfolio("Data/portfolio.csv")
-prices = read_prices("Data/prices.csv")
+    print("Total cost: \t $", round(total_in_shares,2))
+    print("Current value: \t $", round(updated_total,2))
+    if change > 0:
+        print(f"Congratulations, you have made ${change}")
+    if change < 0:
+        print(f"Unfortunately you have lost ${np.abs(change)}")
+    else:
+        print("Your stock has neither gained nor lost value")
 
-total_in_shares = 0
+    report = make_report(portfolio, prices)
 
-for company in portfolio:
-    value = company["shares"] * company["price"]
-    total_in_shares += value
+    headers = ("Name", "Shares", "Price", "Change")
+    print("%10s %10s %10s %10s" % headers)
+    print(("-"*10 + " ") * len(headers))
 
-updated_total = 0
-for company, new in zip(portfolio, prices):
-    name = company["name"]
-    value = company["shares"] * prices[name]
-    updated_total += value
-
-change = round(updated_total - total_in_shares, 2)
-
-print("Total cost: \t $", round(total_in_shares,2))
-print("Current value: \t $", round(updated_total,2))
+    for name, shares, price, change in report:
+        price = f"${price:0.2f}" 
+        print(f"{name:>10s} {shares:>10d} {price:>10s} {change:>10.2f}")
 
 
-if change > 0:
-    print(f"Congratulations, you have made ${change}")
-
-if change < 0:
-    print(f"Unfortunately you have lost ${np.abs(change)}")
-
-else:
-    print("Your stock has neither gained nor lost value")
-
-report = make_report(portfolio, prices)
-
-headers = ("Name", "Shares", "Price", "Change")
-print("%10s %10s %10s %10s" % headers)
-print(("-"*10 + " ") * len(headers))
-
-for name, shares, price, change in report:
-    price = f"${price:0.2f}" 
-    print(f"{name:>10s} {shares:>10d} {price:>10s} {change:>10.2f}")
+portfolio_report("Data/portfolio.csv", "Data/prices.csv")
