@@ -43,28 +43,11 @@ def portfolio_report(portfolio_file, prices_file):
     '''
     portfolio = read_portfolio(portfolio_file)
     prices = read_prices(prices_file)
-    total_in_shares = 0 
-    for company in portfolio:
-        value = company.cost()
-        total_in_shares += value
-    updated_total = 0
-    for company in portfolio:
-        name = company.name
-        value = company.shares * prices[name]
-        updated_total += value
-    change = round(updated_total - total_in_shares, 2)
-
-    print("Total cost: \t $", round(total_in_shares,2))
-    print("Current value: \t $", round(updated_total,2))
-    if change > 0:
-        print(f"Congratulations, you have made ${change}")
-    if change < 0:
-        print(f"Unfortunately you have lost ${np.abs(change)}")
-    else:
-        print("Your stock has neither gained nor lost value")
-
     report = make_report(portfolio, prices)
+    return report
 
+
+def print_report(report):
     headers = ("Name", "Shares", "Price", "Change")
     print("%10s %10s %10s %10s" % headers)
     print(("-"*10 + " ") * len(headers))
@@ -78,4 +61,5 @@ if __name__ == "__main__":
     if len(sys.argv) == 3:
         portfolio_report(sys.argv[1], sys.argv[2])
     else:
-        portfolio_report("Data/portfolio.csv", "Data/prices.csv")
+        report_data = portfolio_report("Data/portfolio.csv", "Data/prices.csv")
+        print_report(report_data)
