@@ -10,11 +10,7 @@ def portfolio_cost(filename):
     '''
     cost = 0
     portfolio = report.read_portfolio(filename)
-    for company in portfolio:
-        num_shares = company["shares"]
-        share_price = company["price"]
-        tot_price = num_shares*share_price
-        cost += tot_price
+    cost = sum([s.cost() for s in portfolio])
     return(cost)
 
 if __name__ == "__main__":

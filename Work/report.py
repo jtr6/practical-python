@@ -2,16 +2,17 @@
 #
 # Exercise 2.4
 
-import csv
 import numpy as np
 import fileparse
+import stock
 
 def read_portfolio(portfolio_file):
     '''
     Read in a csv to a portfolio dict
     '''
     with open(portfolio_file) as file:
-        portfolio = fileparse.parse_csv(file, select=["name", "shares", "price"], types=[str,int,float])
+        portdicts = fileparse.parse_csv(file, select=["name", "shares", "price"], types=[str,int,float])
+        portfolio = [stock.Stock(d["name"], d["shares"], d["price"]) for d in portdicts]
     return portfolio
 
 def read_prices(prices_file):
@@ -29,10 +30,10 @@ def make_report(stocks, prices): # takes a list of stocks and a dict of prices a
     '''
     report = []
     for row in stocks:
-        name = row["name"]
-        shares = row["shares"]
+        name = row.name
+        shares = row.shares
         price = prices[name]
-        change = price - row["price"]
+        change = price - row.price
         report.append((name, shares, price, change))
     return report
 
@@ -44,12 +45,12 @@ def portfolio_report(portfolio_file, prices_file):
     prices = read_prices(prices_file)
     total_in_shares = 0 
     for company in portfolio:
-        value = company["shares"] * company["price"]
+        value = company.cost()
         total_in_shares += value
     updated_total = 0
     for company in portfolio:
-        name = company["name"]
-        value = company["shares"] * prices[name]
+        name = company.name
+        value = company.shares * prices[name]
         updated_total += value
     change = round(updated_total - total_in_shares, 2)
 
