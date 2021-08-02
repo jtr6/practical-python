@@ -13,6 +13,9 @@ class Stock:
     def sell(self, sales):
         self.shares -= sales
 
+    def __repr__(self):
+        return str(f'Stock{self.name, self.shares, self.price}')
+
 class MyStock(Stock):
     def panic(self):
         self.sell(self.shares)

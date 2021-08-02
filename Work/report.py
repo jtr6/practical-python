@@ -5,6 +5,7 @@
 import numpy as np
 import fileparse
 import stock
+import tableformat
 
 def read_portfolio(portfolio_file):
     '''
@@ -24,9 +25,10 @@ def read_prices(prices_file):
         prices = dict(price_list)
     return prices
 
-def make_report(stocks, prices): # takes a list of stocks and a dict of prices and outputs a formatted report
+def make_report(stocks, prices): 
     '''
     Write a report table of shares, prices and change in price
+    takes a list of stocks and a dict of prices and outputs a formatted report
     '''
     report = []
     for row in stocks:
@@ -37,29 +39,28 @@ def make_report(stocks, prices): # takes a list of stocks and a dict of prices a
         report.append((name, shares, price, change))
     return report
 
-def portfolio_report(portfolio_file, prices_file):
+def print_report(report, formatter):
     '''
-    Print out full report with table of shares, price and change, and the current total value and change
+    Print a nicely formatted table from a list of (name, shares,  price, change) tuples
+    '''
+    formatter.headings(["Name", "Shares", "Price", "Change"])
+    for name, shares, price, change in report:
+        row_data = [name, str(shares), f"{price:0.2f}" , f"{change:0.2f}"]
+        formatter.row(row_data)
+
+def portfolio_report(portfolio_file, prices_file, fmt='txt'):
+    '''
+    Asseble and print a full report with table of shares, price and change, and the current total value and change
     '''
     portfolio = read_portfolio(portfolio_file)
     prices = read_prices(prices_file)
     report = make_report(portfolio, prices)
-    return report
-
-
-def print_report(report):
-    headers = ("Name", "Shares", "Price", "Change")
-    print("%10s %10s %10s %10s" % headers)
-    print(("-"*10 + " ") * len(headers))
-
-    for name, shares, price, change in report:
-        price = f"${price:0.2f}" 
-        print(f"{name:>10s} {shares:>10d} {price:>10s} {change:>10.2f}")
+    formatter = tableformat.create_formatter(fmt)
+    print_report(report, formatter)
 
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) == 3:
-        portfolio_report(sys.argv[1], sys.argv[2])
+    if len(sys.argv) == 4:
+        portfolio_report(sys.argv[1], sys.argv[2], sys.argv[3])
     else:
-        report_data = portfolio_report("Data/portfolio.csv", "Data/prices.csv")
-        print_report(report_data)
+        portfolio_report("Data/portfolio.csv", "Data/prices.csv", 'txt')
